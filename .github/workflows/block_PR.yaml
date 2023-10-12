@@ -14,15 +14,11 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Get changed files in the docs folder
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v39
-        with:
-          files: mag/* gds/* verilog/rtl/*
-
-      - name: Run step if any file(s) in the mag, gds or verilog/rtl folder change
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
+      - name: Check updated files
+        id: check-updated-files
         run: |
-          echo "One or more files in the mag, gds or verilog/rtl folder has changed."
-          echo "List all the files that have changed: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
-          exit 1
+          git diff --name-only HEAD HEAD~
+          | grep -E '(mag|gds|verilog/rtl)/'
+          if [[ $? -eq 0 ]]; then
+            exit 1
+          fi
