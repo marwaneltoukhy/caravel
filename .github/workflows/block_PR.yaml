@@ -1,0 +1,24 @@
+name: Check updated files
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-updated-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get updated files
+        run: |
+          git diff origin/main..HEAD --name-only > updated_files.txt
+
+      - name: Check for updated mag, gds, or verilog/rtl files
+        run: |
+          grep -q "mag\|gds\|verilog\/rtl" updated_files.txt && exit 1
+
+      - name: No updated mag, gds, or verilog/rtl files found
+        run: echo "No updated mag, gds, or verilog/rtl files found"
