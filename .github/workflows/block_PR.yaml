@@ -14,10 +14,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Check updated files
-        id: check-updated-files
+      - name: Get updated files
         run: |
-          git diff --name-only HEAD HEAD~ | grep -E '(mag|gds|verilog/rtl)/'
-          if [[ $? -eq 0 ]]; then
-            exit 1
-          fi
+          git diff origin/main..HEAD --name-only > updated_files.txt
+
+      - name: Check for updated mag, gds, or verilog/rtl files
+        run: |
+          grep -q "mag\|gds\|verilog\/rtl" updated_files.txt && exit 1
+
+      - name: No updated mag, gds, or verilog/rtl files found
+        run: echo "No updated mag, gds, or verilog/rtl files found"
