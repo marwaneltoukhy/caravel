@@ -17,8 +17,7 @@ jobs:
       - name: Check updated files
         id: check-updated-files
         run: |
-          git diff --name-only HEAD HEAD~
-          | grep -E '(mag|gds|verilog/rtl)/'
+          git diff --name-only HEAD HEAD~ | grep -E '(mag|gds|verilog/rtl)/'
           if [[ $? -eq 0 ]]; then
             exit 1
           fi
