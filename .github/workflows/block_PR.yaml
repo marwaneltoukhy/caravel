@@ -12,13 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get updated files
-        run: |
-          git diff origin/main..HEAD --name-only > updated_files.txt
+      - name: Get changed files in the docs folder
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v39
+        with:
+          files: mag/* gds/* verilog/rtl/*
 
-      - name: Check for updated mag, gds, or verilog/rtl files
+      - name: Run step if any file(s) in the mag, gds or verilog/rtl folder change
+        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          grep -q "mag\|gds\|verilog\/rtl" updated_files.txt && exit 1
-
-      - name: No updated mag, gds, or verilog/rtl files found
-        run: echo "No updated mag, gds, or verilog/rtl files found"
+          echo "One or more files in the mag, gds or verilog/rtl folder has changed."
+          echo "List all the files that have changed: ${{ steps.changed-files-specific.outputs.all_changed_files }}"
+          exit 1
