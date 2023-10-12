@@ -29,6 +29,11 @@
  *-------------------------------------------------------------
  */
 
+
+
+
+
+
 module openframe_project_wrapper (
 `ifdef USE_POWER_PINS
     inout vdda,		// User area 0 3.3V supply
